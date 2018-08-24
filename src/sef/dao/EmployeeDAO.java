@@ -5,6 +5,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import javax.sql.DataSource;
@@ -52,7 +54,12 @@ public class EmployeeDAO implements EmployeeRepository{
 				emp.setEnterpriseID(rs.getString(7));
 				employeeList.add(emp);
 			}
-			con.close();
+			Collections.sort(employeeList,new Comparator<Employee>(){
+				@Override
+				public int compare(Employee emp1, Employee emp2) {
+					return emp2.getFirstName().compareTo(emp1.getFirstName());
+			}
+			});
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -103,7 +110,6 @@ public class EmployeeDAO implements EmployeeRepository{
 				emp.setWorkForce(rs.getString(6));
 				emp.setEnterpriseID(rs.getString(7));
 			}
-			con.close();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -134,25 +140,11 @@ public class EmployeeDAO implements EmployeeRepository{
 		try {
 			con=this.dataSource.getConnection();
 			String str="select employee.id,first_name,last_name,middle_initial,level,workforce,enterprise_id from employee,employee_project_map where employee.id=employee_id and project_id=? and first_name like ? and last_name like ?";
-//			if(firstName.length()!=0&&lastName.length()!=0){
-//				str+="";
-//			}else if(firstName.length()==0){
-//				str+="last_name like ?";
-//			}else if(lastName.length()==0){
-//				str+="first_name like ?";
-//			}
-			
+
 			PreparedStatement pst=con.prepareStatement(str);
 			pst.setInt(1, (int) projectID);
-//			if(firstName.length()!=0&&lastName.length()!=0){
 				pst.setString(2,firstName+"%");
 				pst.setString(3,lastName+"%");
-//			}else if(firstName.length()==0){
-//				pst.setString(2,lastName+"%");
-//			}else if(lastName.length()==0){
-//				pst.setString(2,firstName+"%");
-//			}
-//			
 			log.info(pst.toString());
 			
 			rs=pst.executeQuery();
@@ -167,7 +159,12 @@ public class EmployeeDAO implements EmployeeRepository{
 				emp.setEnterpriseID(rs.getString(7));
 				employeeList.add(emp);
 			}
-			con.close();
+			Collections.sort(employeeList,new Comparator<Employee>(){
+				@Override
+				public int compare(Employee emp1, Employee emp2) {
+					return emp2.getFirstName().compareTo(emp1.getFirstName());
+			}
+			});
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -190,4 +187,5 @@ public class EmployeeDAO implements EmployeeRepository{
 		}
 		return employeeList;
 	}
+
 }

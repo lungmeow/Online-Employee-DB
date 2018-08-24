@@ -18,7 +18,7 @@ import sef.domain.ProjectRole;
 import sef.impl.service.StubSearchServiceImpl;
 import sef.interfaces.repository.ProjectRepository;
 
-public class ProjectDAO implements ProjectRepository {
+public class ProjectDAO  implements ProjectRepository {
 	private static Logger log = Logger.getLogger(ProjectDAO.class);
 	private DataSource dataSource;
 	public DataSource getDataSource(){
@@ -28,47 +28,69 @@ public class ProjectDAO implements ProjectRepository {
 		super();
 		this.dataSource = dataSource;
 	}
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<Project> listAllProjects() {
 		// TODO Auto-generated method stub
 		List<Project> projectList = new ArrayList<Project>();
-		Connection con=null;
-		ResultSet rs=null;
-		try {
-			con=this.dataSource.getConnection();
-			String str="select * from projects";
-			PreparedStatement pst=con.prepareStatement(str);
-			rs=pst.executeQuery();
-			while(rs.next()){
-				Project proj=new Project();
-				proj.setID(rs.getLong(1));
-				proj.setName(rs.getString(2));
-				proj.setDescription(rs.getString(3));
-				proj.setClient(rs.getString(4));
-				projectList.add(proj);
-			}
-			con.close();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}finally{
-			try{
-				if(con!=null){
-					con.close();
+		
+		String sql="select * from projects";
+		Object[] params = new Object[]{};
+		Object proj = new AbstractDAO(){
+			public List<Project> rowMapper(ResultSet rs) throws SQLException {
+				// TODO Auto-generated method stub
+				List<Project> projectList = new ArrayList<Project>();
+				while(rs.next()){
+					Project proj=new Project();
+					proj.setID(rs.getLong(1));
+					proj.setName(rs.getString(2));
+					proj.setDescription(rs.getString(3));
+					proj.setClient(rs.getString(4));
+					log.info("Adding : " + proj.getName());
+					projectList.add(proj);
 				}
-				if(rs!=null){
-					rs.close();
-				}
-			}catch(SQLException e){
-				log.info(e.getMessage());
-				
-			}finally{
-				log.info("close connection successfully");
+				return projectList;
 			}
-			
-			
-		}
-		return projectList;
+		}.find(sql, params);
+		return (List<Project>) proj;
+//		
+//		Connection con=null;
+//		ResultSet rs=null;
+//		try {
+//			con=this.dataSource.getConnection();
+//			String str="select * from projects";
+//			PreparedStatement pst=con.prepareStatement(str);
+//			rs=pst.executeQuery();
+//			while(rs.next()){
+//				Project proj=new Project();
+//				proj.setID(rs.getLong(1));
+//				proj.setName(rs.getString(2));
+//				proj.setDescription(rs.getString(3));
+//				proj.setClient(rs.getString(4));
+//				projectList.add(proj);
+//			}
+//			con.close();
+//		} catch (SQLException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}finally{
+//			try{
+//				if(con!=null){
+//					con.close();
+//				}
+//				if(rs!=null){
+//					rs.close();
+//				}
+//			}catch(SQLException e){
+//				log.info(e.getMessage());
+//				
+//			}finally{
+//				log.info("close connection successfully");
+//			}
+//			
+//			
+//		}
+//		return projectList;
 	}
 	@Override
 	public List<Project> getEmployeeProjects(long employeeID) {
@@ -78,7 +100,7 @@ public class ProjectDAO implements ProjectRepository {
 		ResultSet rs=null;
 		try {
 			con=this.dataSource.getConnection();
-			String str="select distinct(projects.id),name,description,client from projects,employee_project_map where employee_project_map.project_id=projects.id and employee_id=?";
+			String str="select distinct(projects.id,name,description,client from projects,employee_project_map where employee_project_map.project_id=projects.id and employee_id=?";
 			PreparedStatement pst=con.prepareStatement(str);
 			pst.setInt(1, (int) employeeID);
 			rs=pst.executeQuery();
@@ -90,7 +112,6 @@ public class ProjectDAO implements ProjectRepository {
 				proj.setClient(rs.getString(4));
 				projectList.add(proj);
 			}
-			con.close();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -187,7 +208,6 @@ public class ProjectDAO implements ProjectRepository {
 				emp.setEnterpriseID(rs.getString(7));
 				employeeList.add(emp);
 			}
-			con.close();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -210,4 +230,6 @@ public class ProjectDAO implements ProjectRepository {
 		}
 		return employeeList;
 	}
+	
+	
 }

@@ -65,5 +65,10 @@ public class Employee {
 	public void setWorkForce(String workForce) {
 		this.workForce = workForce;
 	}
-
+//	public int compare(Employee emp1, Employee emp2) {
+//		return emp2.getFirstName().compareTo(emp1.getFirstName());
+//	}
+	public int CompareTo(Employee emp){
+		return this.getFirstName().compareTo(emp.getFirstName());
+	}
 }

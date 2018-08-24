@@ -22,7 +22,7 @@ public class SearchEmployeeController {
 	private static Logger log = Logger.getLogger(SearchEmployeeController.class);
 	private SearchService searchService;
 	private EmployeeDetailsService detailsService;
-	
+	private List<Project> projectList;
 	public SearchEmployeeController(SearchService searchService, EmployeeDetailsService detailsService){
 		this.searchService = searchService;
 		this.detailsService = detailsService;
@@ -37,7 +37,9 @@ public class SearchEmployeeController {
 		EmployeeDetail employee = detailsService.getEmployeeDetails(employeeID);
 		ModelAndView mav = new ModelAndView();
 		mav.addObject("employee", employee.getEmployee());
-		mav.addObject("projectList", employee.getProjectList());
+		if(projectList!=null){
+			mav.addObject("projectList", employee.getProjectList());
+		}//变量缓存
 		mav.addObject("skillList", employee.getSkillList());
 		mav.setViewName("find/employeeDetails");
 		return mav;

@@ -50,6 +50,14 @@
 	<bean id="skillDAO" class="sef.dao.SkillDAO" >
 		<constructor-arg ref="dataSource"/>
 	</bean>
+	<bean id="sqlHelper" class="sef.SQLHelper">
+		<constructor-arg ref="dataSource"/>
+	</bean>
+	<bean id="abstractDAO" class="sef.dao.AbstractDAO" abstract="true">
+	</bean>
+	<bean id="jdbcUtils" class="sef.jdbc.JDBCUtils">
+	<constructor-arg ref="dataSource"/>
+	</bean>
 <!-- 	<bean id="employeeDetailDAO" class="sef.dao.EmployeeDetailDAO" >
 		<constructor-arg ref="dataSource"/>
 	</bean> -->

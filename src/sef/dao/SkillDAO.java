@@ -30,7 +30,7 @@ public class SkillDAO implements SkillRepository{
 		Connection con=null;
 		ResultSet rs=null;
 		try {
-			con=this.dataSource.getConnection();String str="select skill_id,name,description,rating from skill,employee,employee_skill_map where employee_id=employee_skill_map.id and employee_skill_map.skill_id = skill.id and employee_id=?";
+			con=this.dataSource.getConnection();String str="select skill_id,name,description,rating from skill,employee_skill_map where employee_id=employee_skill_map.id and employee_skill_map.skill_id = skill.id and employee_id=?";
 			PreparedStatement pst=con.prepareStatement(str);
 			pst.setInt(1, (int) employeeID);
 			rs=pst.executeQuery();
@@ -43,7 +43,6 @@ public class SkillDAO implements SkillRepository{
 				
 				empSkillList.add(skill);
 			}
-			con.close();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
